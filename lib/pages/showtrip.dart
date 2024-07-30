@@ -1,5 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/config/config.dart';
+import 'package:flutter_application_1/models/request/Trips_Get_Res.dart';
+import 'package:http/http.dart' as http;
 
 class ShowTrip extends StatefulWidget {
   const ShowTrip({super.key});
@@ -9,6 +12,27 @@ class ShowTrip extends StatefulWidget {
 }
 
 class _ShowTripState extends State<ShowTrip> {
+  List<TripsGetRequest> trips = [];
+
+  String url = '';
+  //initState คือ Function ที่ทำงานเมื่อเปิดหน้านี้
+  //1. initState จะทำงาน "ครั้งเดียว" เมื่อเปิดหน้านี้
+  //2. มันจะไม่ทำงานเมื่อเราเรียก setState
+  //3. มันไมาสามารถทำงานเป็น
+  @override
+  void initState() {
+    super.initState();
+    Configuration.getConfig().then(
+      (valu) {
+        log(valu['apiEndpoint']);
+        url = valu['apiEndpoint'];
+        all();
+      },
+    ).catchError((err) {
+      log(err.toString());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,300 +103,303 @@ class _ShowTripState extends State<ShowTrip> {
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: SizedBox(
-                          height: 200,
-                          width: 380,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 236, 229, 246),
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(18, 13, 18, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'ภูทับเบิก',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        height: 150,
-                                        width: 150,
-                                        child: Image.asset(
-                                          'assets/images/Landscape.png',
-                                        ),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            'จังหวัดเพชรบูรณ์',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'ระยะเวลา 10 วัน',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'ราคา 8000 บาท',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          FilledButton(
-                                            onPressed: detail,
-                                            child: const Text(
-                                                'รายละเอียดเพิ่มเติม'),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: SizedBox(
-                          height: 200,
-                          width: 380,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 236, 229, 246),
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(18, 13, 18, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'เกาะล้าน',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        height: 150,
-                                        width: 150,
-                                        child: Image.asset(
-                                          'assets/images/korlan.png',
-                                        ),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            'จังหวัดชลบุรี',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'ระยะเวลา 10 วัน',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'ราคา 7500 บาท',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          FilledButton(
-                                            onPressed: detail,
-                                            child: const Text(
-                                                'รายละเอียดเพิ่มเติม'),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: SizedBox(
-                          height: 200,
-                          width: 380,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 236, 229, 246),
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(18, 13, 18, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'เสม็ดนางชี',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        height: 150,
-                                        width: 150,
-                                        child: Image.asset(
-                                          'assets/images/samet.png',
-                                        ),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            'จังหวัดพังงา',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'ระยะเวลา 8 วัน',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'ราคา 12000 บาท',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          FilledButton(
-                                            onPressed: detail,
-                                            child: const Text(
-                                                'รายละเอียดเพิ่มเติม'),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: SizedBox(
-                          height: 200,
-                          width: 380,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 236, 229, 246),
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(18, 13, 18, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'เมืองเก่าภูเก็ต',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        height: 150,
-                                        width: 150,
-                                        child: Image.asset(
-                                          'assets/images/old_puket.png',
-                                        ),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            'จังหวัดภูเก็ต',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'ระยะเวลา 9 วัน',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'ราคา 9500 บาท',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          FilledButton(
-                                            onPressed: detail,
-                                            child: const Text(
-                                                'รายละเอียดเพิ่มเติม'),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    children: trips
+                        .map((trip) => Card(
+                              child: Text(trip.name),
+                            ))
+                        .toList(),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 10),
+                    //   child: SizedBox(
+                    //     height: 200,
+                    //     width: 380,
+                    //     child: Container(
+                    //       decoration: BoxDecoration(
+                    //         color: const Color.fromARGB(255, 236, 229, 246),
+                    //         borderRadius: BorderRadius.circular(30.0),
+                    //       ),
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.fromLTRB(18, 13, 18, 0),
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             const Text(
+                    //               'ภูทับเบิก',
+                    //               style: TextStyle(
+                    //                 fontSize: 18,
+                    //                 fontWeight: FontWeight.bold,
+                    //               ),
+                    //             ),
+                    //             Row(
+                    //               mainAxisAlignment:
+                    //                   MainAxisAlignment.spaceEvenly,
+                    //               children: [
+                    //                 SizedBox(
+                    //                   height: 150,
+                    //                   width: 150,
+                    //                   child: Image.asset(
+                    //                     'assets/images/Landscape.png',
+                    //                   ),
+                    //                 ),
+                    //                 Column(
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.start,
+                    //                   children: [
+                    //                     const Text(
+                    //                       'จังหวัดเพชรบูรณ์',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     const Text(
+                    //                       'ระยะเวลา 10 วัน',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     const Text(
+                    //                       'ราคา 8000 บาท',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     FilledButton(
+                    //                       onPressed: detail,
+                    //                       child: const Text(
+                    //                           'รายละเอียดเพิ่มเติม'),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 10),
+                    //   child: SizedBox(
+                    //     height: 200,
+                    //     width: 380,
+                    //     child: Container(
+                    //       decoration: BoxDecoration(
+                    //         color: const Color.fromARGB(255, 236, 229, 246),
+                    //         borderRadius: BorderRadius.circular(30.0),
+                    //       ),
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.fromLTRB(18, 13, 18, 0),
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             const Text(
+                    //               'เกาะล้าน',
+                    //               style: TextStyle(
+                    //                 fontSize: 18,
+                    //                 fontWeight: FontWeight.bold,
+                    //               ),
+                    //             ),
+                    //             Row(
+                    //               mainAxisAlignment:
+                    //                   MainAxisAlignment.spaceEvenly,
+                    //               children: [
+                    //                 SizedBox(
+                    //                   height: 150,
+                    //                   width: 150,
+                    //                   child: Image.asset(
+                    //                     'assets/images/korlan.png',
+                    //                   ),
+                    //                 ),
+                    //                 Column(
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.start,
+                    //                   children: [
+                    //                     const Text(
+                    //                       'จังหวัดชลบุรี',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     const Text(
+                    //                       'ระยะเวลา 10 วัน',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     const Text(
+                    //                       'ราคา 7500 บาท',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     FilledButton(
+                    //                       onPressed: detail,
+                    //                       child: const Text(
+                    //                           'รายละเอียดเพิ่มเติม'),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 10),
+                    //   child: SizedBox(
+                    //     height: 200,
+                    //     width: 380,
+                    //     child: Container(
+                    //       decoration: BoxDecoration(
+                    //         color: const Color.fromARGB(255, 236, 229, 246),
+                    //         borderRadius: BorderRadius.circular(30.0),
+                    //       ),
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.fromLTRB(18, 13, 18, 0),
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             const Text(
+                    //               'เสม็ดนางชี',
+                    //               style: TextStyle(
+                    //                 fontSize: 18,
+                    //                 fontWeight: FontWeight.bold,
+                    //               ),
+                    //             ),
+                    //             Row(
+                    //               mainAxisAlignment:
+                    //                   MainAxisAlignment.spaceEvenly,
+                    //               children: [
+                    //                 SizedBox(
+                    //                   height: 150,
+                    //                   width: 150,
+                    //                   child: Image.asset(
+                    //                     'assets/images/samet.png',
+                    //                   ),
+                    //                 ),
+                    //                 Column(
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.start,
+                    //                   children: [
+                    //                     const Text(
+                    //                       'จังหวัดพังงา',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     const Text(
+                    //                       'ระยะเวลา 8 วัน',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     const Text(
+                    //                       'ราคา 12000 บาท',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     FilledButton(
+                    //                       onPressed: detail,
+                    //                       child: const Text(
+                    //                           'รายละเอียดเพิ่มเติม'),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 10),
+                    //   child: SizedBox(
+                    //     height: 200,
+                    //     width: 380,
+                    //     child: Container(
+                    //       decoration: BoxDecoration(
+                    //         color: const Color.fromARGB(255, 236, 229, 246),
+                    //         borderRadius: BorderRadius.circular(30.0),
+                    //       ),
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.fromLTRB(18, 13, 18, 0),
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             const Text(
+                    //               'เมืองเก่าภูเก็ต',
+                    //               style: TextStyle(
+                    //                 fontSize: 18,
+                    //                 fontWeight: FontWeight.bold,
+                    //               ),
+                    //             ),
+                    //             Row(
+                    //               mainAxisAlignment:
+                    //                   MainAxisAlignment.spaceEvenly,
+                    //               children: [
+                    //                 SizedBox(
+                    //                   height: 150,
+                    //                   width: 150,
+                    //                   child: Image.asset(
+                    //                     'assets/images/old_puket.png',
+                    //                   ),
+                    //                 ),
+                    //                 Column(
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.start,
+                    //                   children: [
+                    //                     const Text(
+                    //                       'จังหวัดภูเก็ต',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     const Text(
+                    //                       'ระยะเวลา 9 วัน',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     const Text(
+                    //                       'ราคา 9500 บาท',
+                    //                       style: TextStyle(
+                    //                         fontSize: 16,
+                    //                         fontWeight: FontWeight.normal,
+                    //                       ),
+                    //                     ),
+                    //                     FilledButton(
+                    //                       onPressed: detail,
+                    //                       child: const Text(
+                    //                           'รายละเอียดเพิ่มเติม'),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ),
                 ),
               ),
@@ -384,7 +411,17 @@ class _ShowTripState extends State<ShowTrip> {
   }
 
   void all() {
-    log('ทั้งหมด');
+    http.get(Uri.parse('$url/trips')).then(
+      (value) {
+        log(value.body);
+        setState(() {
+          trips = tripsGetRequestFromJson(value.body);
+          log(trips.length.toString());
+        });
+      },
+    ).catchError((err) {
+      log(err.toString());
+    });
   }
 
   void asia() {

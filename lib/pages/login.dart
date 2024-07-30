@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/config/config.dart';
+import 'package:flutter_application_1/config/internal_config.dart';
 import 'package:flutter_application_1/models/reqsponse/CustomersLoginPostResponse.dart';
 import 'package:flutter_application_1/models/reqsponse/Customers_login_post_req.dart';
 import 'package:flutter_application_1/pages/register.dart';
@@ -21,6 +23,23 @@ class _LoginPageState extends State<LoginPage> {
   String phoneNo = '';
   TextEditingController phoneCtl = TextEditingController();
   TextEditingController passwordCtl = TextEditingController();
+  String url = '';
+ //initState คือ Function ที่ทำงานเมื่อเปิดหน้านี้
+ //1. initState จะทำงาน "ครั้งเดียว" เมื่อเปิดหน้านี้
+ //2. มันจะไม่ทำงานเมื่อเราเรียก setState
+ //3. มันไมาสามารถทำงานเป็น
+  @override
+  void initState() {
+    super.initState();
+    Configuration.getConfig().then(
+      (valu){
+        log(valu['apiEndpoint']);
+        url = valu ['apiEndpoint'];
+      },
+    ).catchError((err){
+      log(err.toString());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       var value = await http.post(
-          Uri.parse("http://10.160.36.252:3000/customers/login"),
+          Uri.parse('$url/customers/login'),
           headers: {"Content-Type": "application/json; charset=utf-8"},
           body: jsonEncode(data));
       CustomersLoginPostResponse customer =
