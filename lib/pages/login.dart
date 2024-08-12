@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/config/config.dart';
-import 'package:flutter_application_1/config/internal_config.dart';
 import 'package:flutter_application_1/models/reqsponse/CustomersLoginPostResponse.dart';
-import 'package:flutter_application_1/models/reqsponse/Customers_login_post_req.dart';
+import 'package:flutter_application_1/models/reqsponse/customers_login_post_req.dart';
 import 'package:flutter_application_1/pages/register.dart';
 import 'package:flutter_application_1/pages/showtrip.dart';
 import 'package:http/http.dart' as http;
@@ -24,19 +21,18 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController phoneCtl = TextEditingController();
   TextEditingController passwordCtl = TextEditingController();
   String url = '';
- //initState คือ Function ที่ทำงานเมื่อเปิดหน้านี้
- //1. initState จะทำงาน "ครั้งเดียว" เมื่อเปิดหน้านี้
- //2. มันจะไม่ทำงานเมื่อเราเรียก setState
- //3. มันไมาสามารถทำงานเป็น
+
   @override
   void initState() {
     super.initState();
     Configuration.getConfig().then(
-      (valu){
-        log(valu['apiEndpoint']);
-        url = valu ['apiEndpoint'];
+      (value) {
+        log(value['apiEndpoint']);
+        setState(() {
+          url = value['apiEndpoint'];
+        });
       },
-    ).catchError((err){
+    ).catchError((err) {
       log(err.toString());
     });
   }
@@ -110,8 +106,10 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-            // Text(errorText,style: const TextStyle(color: Colors.red))
-            Text(errorText)
+            Text(
+              errorText,
+              style: const TextStyle(color: Colors.red),
+            )
           ],
         ),
       ),
@@ -120,9 +118,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void register() {
     log('This is Register button');
-    // setState(() {
-    //   text = 'Hello word!!!';
-    // });
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -131,76 +126,36 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login() async {
-    // Call login api
-
     var data = CustomersLoginPostRequest(
         phone: phoneCtl.text, password: passwordCtl.text);
 
     try {
-      var value = await http.post(
-          Uri.parse('$url/customers/login'),
-          headers: {"Content-Type": "application/json; charset=utf-8"},
-          body: jsonEncode(data));
-      CustomersLoginPostResponse customer =
-          customersLoginPostResponseFromJson(value.body);
-      log(customer.customer.email);
-      Navigator.push(
+      var response = await http.post(
+        Uri.parse('$url/customers/login'),
+        headers: {"Content-Type": "application/json; charset=utf-8"},
+        body: customersLoginPostRequestToJson(data),
+      );
+
+      if (response.statusCode == 200) {
+        CustomersLoginPostResponse customer =
+            customersLoginPostResponseFromJson(response.body);
+        log("idx ${customer.customer.idx}");
+        Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ShowTrip(),
-          ));
-    } catch (eeee) {
+            builder: (context) => ShowTrip(cid: customer.customer.idx),
+          ),
+        );
+      } else {
+        setState(() {
+          errorText = 'หมายเลขโทรศัพท์หรือรหัสผ่านไม่ถูกต้อง!!!';
+        });
+      }
+    } catch (error) {
       setState(() {
-        errorText = 'Phone no or Password Incorrect';
+        errorText = 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ!!!';
       });
+      log(error.toString());
     }
-
-    // var data = CustomersLoginPostRequest(
-    //     phone: phoneCtl.text, password: passwordCtl.text);
-    // http
-    //     .post(Uri.parse("http://10.160.36.252:3000/customers/login"),
-    //         headers: {"Content-Type": "application/json; charset=utf-8"},
-    //         body: jsonEncode(data))
-    //     .then(
-    //   (value) {
-    //     CustomersLoginPostResponse customer =
-    //         customersLoginPostResponseFromJson(value.body);
-    //     log(customer.customer.email);
-    //     Navigator.push(
-    //         context, MaterialPageRoute(builder: (context) => const ShowTrip(),
-    //         ));
-
-    //     // var jsonRes = jsonDecode(value.body);
-    //     // log(jsonRes['customer']['email']);
-    //   },
-    // ).catchError((eee) {
-    //   // log(eee.toString());
-    //   setState(() {
-    //     errorText = 'Phone no or Password Incorrect';
-    //   });
-    // });
-
-    // setState(() {
-    //   count++;
-    //   text = 'Login time:$count';
-    //   log('Login time:$count');
-    // });
-
-    //   if (phoneCtl.text == '0812345678' && passwordCtl.text == '1234') {
-    //     log(phoneCtl.text);
-    //     log(phoneCtl.text);
-    //      setState(() {
-    //       errorText = '';
-    //     });
-    //     Navigator.push(
-    //         context,
-    //         MaterialPageRoute(
-    //           builder: (context) => const ShowTrip(),
-    //         ));
-    //   } else {
-    //     setState(() {
-    //       errorText = 'หมายเลขโทรศัพท์หรือรหัสผ่านไม่ถูกต้อง';
-    //     });
-    //   }
   }
 }

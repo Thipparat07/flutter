@@ -47,7 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderSide: BorderSide(width: 1))),
                     ),
                     const Padding(
-                   padding: EdgeInsets.only(top: 15),
+                      padding: EdgeInsets.only(top: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -62,7 +62,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderSide: BorderSide(width: 1))),
                     ),
                     const Padding(
-                padding: EdgeInsets.only(top: 15),
+                      padding: EdgeInsets.only(top: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -77,7 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderSide: BorderSide(width: 1))),
                     ),
                     const Padding(
-                   padding: EdgeInsets.only(top: 15),
+                      padding: EdgeInsets.only(top: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -93,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderSide: BorderSide(width: 1))),
                     ),
                     const Padding(
-              padding: EdgeInsets.only(top: 15),
+                      padding: EdgeInsets.only(top: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -109,23 +109,25 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderSide: BorderSide(width: 1))),
                     ),
                     Padding(
-                   padding: const EdgeInsets.only(top: 15),
+                      padding: const EdgeInsets.only(top: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           FilledButton(
-                              onPressed: register, child: const Text('สมัครสมาชิก'))
+                              onPressed: register,
+                              child: const Text('สมัครสมาชิก'))
                         ],
                       ),
                     ),
                     Padding(
-                   padding: const EdgeInsets.only(top: 15),
+                      padding: const EdgeInsets.only(top: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           const Text('หากมีบัญชีอยู่แล้ว'),
                           TextButton(
-                              onPressed: login, child: const Text('เข้าสู่ระบบ'))
+                              onPressed: login,
+                              child: const Text('เข้าสู่ระบบ'))
                         ],
                       ),
                     )
@@ -137,34 +139,36 @@ class _RegisterPageState extends State<RegisterPage> {
         ));
   }
 
-  void register() async{
+  void register() async {
     // log('สมัครสมาชิก')
-    if(nameCtl.text.isEmpty ||
-      phoneCtl.text.isEmpty ||
-      emailCtl.text.isEmpty || 
-      passwordCtl1.text.isEmpty ||
-      passwordCtl2.text.isEmpty)
-      {
+    if (nameCtl.text.isEmpty ||
+        phoneCtl.text.isEmpty ||
+        emailCtl.text.isEmpty ||
+        passwordCtl1.text.isEmpty ||
+        passwordCtl2.text.isEmpty) {
       setState(() {
         errorText = 'กรุณาใส่ข้อมูลให้ครบทุกช่อง';
       });
-    return;
+      return;
     }
 
-    if(passwordCtl1.text != passwordCtl2.text)
-      {setState(() {
+    if (passwordCtl1.text != passwordCtl2.text) {
+      setState(() {
         errorText = 'รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน!';
       });
-    return;
+      return;
     }
-      
 
     var data = CustomersRegisterPostRequest(
-        fullname: nameCtl.text, phone: phoneCtl.text, email: emailCtl.text, image: '', password: passwordCtl1.text);
+        fullname: nameCtl.text,
+        phone: phoneCtl.text,
+        email: emailCtl.text,
+        image: '',
+        password: passwordCtl1.text);
 
     try {
       var value = await http.post(
-          Uri.parse("http://10.160.22.228:3000/customers"),
+          Uri.parse("http://10.34.40.116:3000/customers"),
           headers: {"Content-Type": "application/json; charset=utf-8"},
           body: jsonEncode(data));
       CustomersRegisterPostRequest customer =
@@ -180,12 +184,6 @@ class _RegisterPageState extends State<RegisterPage> {
         errorText = 'Phone no or Password Incorrect';
       });
     }
-
-
-
-
-
-
   }
 
   void login() {
