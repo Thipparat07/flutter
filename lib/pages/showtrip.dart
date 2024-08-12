@@ -120,10 +120,21 @@ class _ShowTripState extends State<ShowTrip> {
                         ),
                         const SizedBox(width: 8.0),
                         SizedBox(
-                          width: 95,
+                          width: 120,
                           child: FilledButton(
-                            onPressed: asean,
-                            child: const Text('อาเซียน'),
+                            onPressed: southeastAsia,
+                            child: const Text(
+                              'เอเชียตะวันออกเฉียงใต้',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8.0),
+                        SizedBox(
+                          width: 110,
+                          child: FilledButton(
+                            onPressed: thai,
+                            child: const Text('ประเทศไทย'),
                           ),
                         ),
                       ],
@@ -309,18 +320,24 @@ class _ShowTripState extends State<ShowTrip> {
 
   void asia() {
     log('เอเชีย');
+    getTrips('เอเชีย'); // ส่งค่าโซน "Asia" ไปยัง getTrips เพื่อกรองข้อมูลทริป
   }
 
   void eu() {
     log('ยุโรป');
+    getTrips('ยุโรป'); // ส่งค่าโซน "Europe" ไปยัง getTrips เพื่อกรองข้อมูลทริป
   }
 
-  void asean() {
-    log('อาเซียน');
+  void southeastAsia() {
+    log('เอเชียตะวันออกเฉียงใต้');
+    getTrips(
+        'เอเชียตะวันออกเฉียงใต้'); // ส่งค่าโซน "Asean" ไปยัง getTrips เพื่อกรองข้อมูลทริป
   }
 
-  void detail() {
-    log('รายละเอียดเพิ่มเติม');
+  void thai() {
+    log('ประเทศไทย');
+    getTrips(
+        'ประเทศไทย'); // ส่งค่าโซน "Asean" ไปยัง getTrips เพื่อกรองข้อมูลทริป
   }
 
   void goToTripPage(int idx) {
